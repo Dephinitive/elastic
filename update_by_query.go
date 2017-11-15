@@ -255,7 +255,7 @@ func (s *UpdateByQueryService) Q(q string) *UpdateByQueryService {
 
 // AutoSlice sets the update-by-query parallelize Sliced Scroll count
 func (s *UpdateByQueryService) AutoSlice(numSlice int) *UpdateByQueryService {
-	s.slices = numSlice
+	s.slices = &numSlice
 	return s
 }
 
