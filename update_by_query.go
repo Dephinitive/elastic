@@ -35,6 +35,7 @@ type UpdateByQueryService struct {
 	expandWildcards        string
 	explain                *bool
 	fielddataFields        []string
+	slices                 *int
 	from                   *int
 	ignoreUnavailable      *bool
 	lenient                *bool
@@ -252,6 +253,12 @@ func (s *UpdateByQueryService) Q(q string) *UpdateByQueryService {
 	return s
 }
 
+// AutoSlice sets the update-by-query parallelize Sliced Scroll count
+func (s *UpdateByQueryService) AutoSlice(numSlice int) *UpdateByQueryService {
+	s.slices = numSlice
+	return s
+}
+
 // Query sets a query definition using the Query DSL.
 func (s *UpdateByQueryService) Query(query Query) *UpdateByQueryService {
 	s.query = query
@@ -448,6 +455,9 @@ func (s *UpdateByQueryService) buildURL() (string, url.Values, error) {
 	params := url.Values{}
 	if s.pretty {
 		params.Set("pretty", "true")
+	}
+	if s.slices != nil {
+		params.Set("slices", fmt.Sprintf("%v", s.slices))
 	}
 	if len(s.xSource) > 0 {
 		params.Set("_source", strings.Join(s.xSource, ","))
